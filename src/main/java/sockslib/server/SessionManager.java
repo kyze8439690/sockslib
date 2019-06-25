@@ -20,59 +20,59 @@ import java.util.Map;
  */
 public interface SessionManager {
 
-  /**
-   * Create a new {@link Session}.
-   *
-   * @param socket socket.
-   * @return session.
-   */
-  Session newSession(Socket socket);
+    /**
+     * Create a new {@link Session}.
+     *
+     * @param socket socket.
+     * @return session.
+     */
+    Session newSession(Socket socket);
 
-  /**
-   * Returns the session by giving a id.
-   *
-   * @param id id of session.
-   * @return session.
-   */
-  Session getSession(long id);
+    /**
+     * Returns the session by giving a id.
+     *
+     * @param id id of session.
+     * @return session.
+     */
+    Session getSession(long id);
 
-  void sessionOnCreate(Session session) throws CloseSessionException;
+    void sessionOnCreate(Session session) throws CloseSessionException;
 
-  void sessionOnCommand(Session session, CommandMessage message) throws CloseSessionException;
+    void sessionOnCommand(Session session, CommandMessage message) throws CloseSessionException;
 
-  void sessionOnException(Session session, Exception exception);
+    void sessionOnException(Session session, Exception exception);
 
-  void sessionOnClose(Session session);
+    void sessionOnClose(Session session);
 
-  /**
-   * Remove a {@link SessionListener} by name.
-   *
-   * @param name name of {@link SessionListener}.
-   */
-  void removeSessionListener(String name);
+    /**
+     * Remove a {@link SessionListener} by name.
+     *
+     * @param name name of {@link SessionListener}.
+     */
+    void removeSessionListener(String name);
 
-  /**
-   * Add a {@link SessionListener}.
-   *
-   * @param name     name of {@link SessionListener}.
-   * @param listener instance of {@link SessionListener}.
-   */
-  void addSessionListener(String name, SessionListener listener);
+    /**
+     * Add a {@link SessionListener}.
+     *
+     * @param name     name of {@link SessionListener}.
+     * @param listener instance of {@link SessionListener}.
+     */
+    void addSessionListener(String name, SessionListener listener);
 
-  /**
-   * Returns all managed sessions.
-   *
-   * @return all managed sessions.
-   */
-  Map<Long, Session> getManagedSessions();
+    /**
+     * Returns all managed sessions.
+     *
+     * @return all managed sessions.
+     */
+    Map<Long, Session> getManagedSessions();
 
-  SessionManager onSessionClose(String name, SessionCloseListener listener);
+    SessionManager onSessionClose(String name, SessionCloseListener listener);
 
-  SessionManager onSessionCreate(String name, SessionCreateListener listener);
+    SessionManager onSessionCreate(String name, SessionCreateListener listener);
 
-  SessionManager onCommand(String name, CommandListener listener);
+    SessionManager onCommand(String name, CommandListener listener);
 
-  SessionManager onException(String name, ExceptionListener listener);
+    SessionManager onException(String name, ExceptionListener listener);
 
 
 }

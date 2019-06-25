@@ -26,10 +26,10 @@ import sockslib.server.Session;
  */
 @FunctionalInterface
 public interface SessionCloseListener {
-  /**
-   * When a session closed, this method will be called by {@link sockslib.server.SocksHandler}.
-   *
-   * @param session Current session.
-   */
-  void onClose(Session session);
+    /**
+     * When a session closed, this method will be called by {@link sockslib.server.SocksHandler}.
+     *
+     * @param session Current session.
+     */
+    void onClose(Session session);
 }

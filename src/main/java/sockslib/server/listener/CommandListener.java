@@ -27,12 +27,11 @@ import sockslib.server.msg.CommandMessage;
 @FunctionalInterface
 public interface CommandListener {
 
-  /**
-   * When a client request a SOCKS5 command, this method will be called.
-   *
-   * @param session Current session.
-   * @param message The {@link CommandMessage} sent to server.
-   * @throws CloseSessionException
-   */
-  void onCommand(Session session, CommandMessage message) throws CloseSessionException;
+    /**
+     * When a client request a SOCKS5 command, this method will be called.
+     *
+     * @param session Current session.
+     * @param message The {@link CommandMessage} sent to server.
+     */
+    void onCommand(Session session, CommandMessage message) throws CloseSessionException;
 }

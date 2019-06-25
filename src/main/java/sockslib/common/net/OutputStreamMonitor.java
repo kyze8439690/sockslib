@@ -6,5 +6,5 @@ package sockslib.common.net;
  * @date Sep 21, 2015 2:44 PM
  */
 public interface OutputStreamMonitor {
-  void onWrite(byte[] bytes);
+    void onWrite(byte[] bytes);
 }

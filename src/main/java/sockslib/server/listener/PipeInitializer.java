@@ -16,6 +16,6 @@ import java.util.List;
  */
 public interface PipeInitializer {
 
-  Pipe initialize(Pipe pipe);
+    Pipe initialize(Pipe pipe);
 
 }

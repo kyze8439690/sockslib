@@ -13,20 +13,21 @@ import java.net.SocketAddress;
  */
 public class AddressUtil {
 
-  public static IP toIP(SocketAddress socketAddress){
-    if (socketAddress instanceof InetSocketAddress){
-      byte[] address = ((InetSocketAddress) socketAddress).getAddress().getAddress();
-      return new IP(address);
-    }else{
-      throw new IllegalArgumentException("Not support type:" + socketAddress.getClass().getName());
+    public static IP toIP(SocketAddress socketAddress) {
+        if (socketAddress instanceof InetSocketAddress) {
+            byte[] address = ((InetSocketAddress) socketAddress).getAddress().getAddress();
+            return new IP(address);
+        } else {
+            throw new IllegalArgumentException(
+                    "Not support type:" + socketAddress.getClass().getName());
+        }
     }
-  }
 
-  public static boolean addressIn(SocketAddress address, String ip){
-    return false;
-  }
+    public static boolean addressIn(SocketAddress address, String ip) {
+        return false;
+    }
 
-  public static boolean addressIn(InetAddress address, String ip){
-    return false;
-  }
+    public static boolean addressIn(InetAddress address, String ip) {
+        return false;
+    }
 }

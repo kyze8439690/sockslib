@@ -32,157 +32,157 @@ import java.util.concurrent.ExecutorService;
  */
 public interface SocksProxyServer {
 
-  /**
-   * SOCKS server default port.
-   */
-  int DEFAULT_SOCKS_PORT = 1080;
+    /**
+     * SOCKS server default port.
+     */
+    int DEFAULT_SOCKS_PORT = 1080;
 
-  /**
-   * Starts a SOCKS server.
-   *
-   * @throws IOException If any I/O error occurs.
-   */
-  void start() throws IOException;
+    /**
+     * Starts a SOCKS server.
+     *
+     * @throws IOException If any I/O error occurs.
+     */
+    void start() throws IOException;
 
-  /**
-   * Shutdown a SOCKS server.
-   */
-  void shutdown();
+    /**
+     * Shutdown a SOCKS server.
+     */
+    void shutdown();
 
-  /**
-   * Create an instance {@link SocksHandler}.
-   *
-   * @return Instance of {@link SocksHandler}.
-   */
-  SocksHandler createSocksHandler();
+    /**
+     * Create an instance {@link SocksHandler}.
+     *
+     * @return Instance of {@link SocksHandler}.
+     */
+    SocksHandler createSocksHandler();
 
-  /**
-   * Initializes {@link SocksHandler}.
-   *
-   * @param socksHandler The instance of {@link SocksHandler}.
-   */
-  void initializeSocksHandler(SocksHandler socksHandler);
+    /**
+     * Initializes {@link SocksHandler}.
+     *
+     * @param socksHandler The instance of {@link SocksHandler}.
+     */
+    void initializeSocksHandler(SocksHandler socksHandler);
 
-  /**
-   * Sets the methods that socks server supports.
-   *
-   * @param methods The methods that SOCKS server sports.
-   */
-  void setSupportMethods(SocksMethod... methods);
+    /**
+     * Sets the methods that socks server supports.
+     *
+     * @param methods The methods that SOCKS server sports.
+     */
+    void setSupportMethods(SocksMethod... methods);
 
-  /**
-   * Gets all sessions that SOCKS server managed.
-   *
-   * @return All sessions that SOCKS server managed.
-   */
-  Map<Long, Session> getManagedSessions();
+    /**
+     * Gets all sessions that SOCKS server managed.
+     *
+     * @return All sessions that SOCKS server managed.
+     */
+    Map<Long, Session> getManagedSessions();
 
-  /**
-   * Returns buffer size.
-   *
-   * @return Buffer size.
-   */
-  int getBufferSize();
+    /**
+     * Returns buffer size.
+     *
+     * @return Buffer size.
+     */
+    int getBufferSize();
 
-  /**
-   * Sets buffer size.
-   *
-   * @param bufferSize Buffer size.
-   */
-  void setBufferSize(int bufferSize);
+    /**
+     * Sets buffer size.
+     *
+     * @param bufferSize Buffer size.
+     */
+    void setBufferSize(int bufferSize);
 
-  /**
-   * Returns timeout.
-   *
-   * @return Timeout.
-   */
-  int getTimeout();
+    /**
+     * Returns timeout.
+     *
+     * @return Timeout.
+     */
+    int getTimeout();
 
-  /**
-   * Sets timeout.
-   *
-   * @param timeout timeout.
-   */
-  void setTimeout(int timeout);
+    /**
+     * Sets timeout.
+     *
+     * @param timeout timeout.
+     */
+    void setTimeout(int timeout);
 
-  /**
-   * Returns server's proxy.
-   *
-   * @return Server's proxy.
-   */
-  SocksProxy getProxy();
+    /**
+     * Returns server's proxy.
+     *
+     * @return Server's proxy.
+     */
+    SocksProxy getProxy();
 
-  /**
-   * Set server proxy.
-   *
-   * @param proxy Proxy server will use.
-   */
-  void setProxy(SocksProxy proxy);
+    /**
+     * Set server proxy.
+     *
+     * @param proxy Proxy server will use.
+     */
+    void setProxy(SocksProxy proxy);
 
-  /**
-   * Sets thread pool.
-   *
-   * @param executeService Thread pool.
-   */
-  void setExecutorService(ExecutorService executeService);
+    /**
+     * Sets thread pool.
+     *
+     * @param executeService Thread pool.
+     */
+    void setExecutorService(ExecutorService executeService);
 
-  /**
-   * Returns server bind addr.
-   *
-   * @return Server bind addr.
-   */
-  InetAddress getBindAddr();
+    /**
+     * Returns server bind addr.
+     *
+     * @return Server bind addr.
+     */
+    InetAddress getBindAddr();
 
-  /**
-   * Returns server bind port.
-   *
-   * @return Server bind port.
-   */
-  int getBindPort();
+    /**
+     * Returns server bind port.
+     *
+     * @return Server bind port.
+     */
+    int getBindPort();
 
-  /**
-   * Sets server bind addr
-   *
-   * @param bindAddr Bind addr.
-   */
-  void setBindAddr(InetAddress bindAddr);
+    /**
+     * Sets server bind addr
+     *
+     * @param bindAddr Bind addr.
+     */
+    void setBindAddr(InetAddress bindAddr);
 
-  /**
-   * Sets server bind port
-   *
-   * @param bindPort Bind port.
-   */
-  void setBindPort(int bindPort);
+    /**
+     * Sets server bind port
+     *
+     * @param bindPort Bind port.
+     */
+    void setBindPort(int bindPort);
 
-  /**
-   * Returns <code>true</code> if the server run in daemon thread.
-   *
-   * @return <code>true</code> if the server run in daemon thread.
-   */
-  boolean isDaemon();
+    /**
+     * Returns <code>true</code> if the server run in daemon thread.
+     *
+     * @return <code>true</code> if the server run in daemon thread.
+     */
+    boolean isDaemon();
 
-  /**
-   * Sets <code>true</code> the server will run in daemon thread.
-   *
-   * @param daemon Daemon thread
-   */
-  void setDaemon(boolean daemon);
+    /**
+     * Sets <code>true</code> the server will run in daemon thread.
+     *
+     * @param daemon Daemon thread
+     */
+    void setDaemon(boolean daemon);
 
-  /**
-   * Returns {@link SessionManager}
-   *
-   * @return {@link SessionManager}
-   */
-  SessionManager getSessionManager();
+    /**
+     * Returns {@link SessionManager}
+     *
+     * @return {@link SessionManager}
+     */
+    SessionManager getSessionManager();
 
-  /**
-   * Sets {@link SessionManager}
-   *
-   * @param sessionManager {@link SessionManager}
-   */
-  void setSessionManager(SessionManager sessionManager);
+    /**
+     * Sets {@link SessionManager}
+     *
+     * @param sessionManager {@link SessionManager}
+     */
+    void setSessionManager(SessionManager sessionManager);
 
-  PipeInitializer getPipeInitializer();
+    PipeInitializer getPipeInitializer();
 
-  void setPipeInitializer(PipeInitializer pipeInitializer);
+    void setPipeInitializer(PipeInitializer pipeInitializer);
 }

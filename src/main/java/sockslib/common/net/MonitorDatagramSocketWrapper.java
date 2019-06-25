@@ -18,198 +18,198 @@ import java.util.List;
  */
 public class MonitorDatagramSocketWrapper extends DatagramSocket {
 
-  private List<DatagramSocketMonitor> monitors;
+    private List<DatagramSocketMonitor> monitors;
 
-  private DatagramSocket originalDatagramSocket;
+    private DatagramSocket originalDatagramSocket;
 
-  public MonitorDatagramSocketWrapper() throws SocketException {
+    public MonitorDatagramSocketWrapper() throws SocketException {
 
-  }
-
-  public MonitorDatagramSocketWrapper(DatagramSocket datagramSocket) throws SocketException {
-    this.originalDatagramSocket = datagramSocket;
-  }
-
-
-  public MonitorDatagramSocketWrapper(DatagramSocket datagramSocket, DatagramSocketMonitor...
-      monitors) throws SocketException {
-    this.originalDatagramSocket = datagramSocket;
-    this.monitors = new ArrayList<>(monitors.length);
-    Collections.addAll(this.monitors, monitors);
-  }
-
-  public static void main(String[] args) throws SocketException {
-    new MonitorDatagramSocketWrapper();
-  }
-
-  public DatagramSocket getOriginalDatagramSocket() {
-    return originalDatagramSocket;
-  }
-
-  public void setOriginalDatagramSocket(DatagramSocket originalDatagramSocket) {
-    this.originalDatagramSocket = originalDatagramSocket;
-  }
-
-  public List<DatagramSocketMonitor> getMonitors() {
-    return monitors;
-  }
-
-  public void setMonitors(List<DatagramSocketMonitor> monitors) {
-    this.monitors = monitors;
-  }
-
-  @Override
-  public void send(DatagramPacket p) throws IOException {
-    originalDatagramSocket.send(p);
-    if (monitors != null) {
-      for (DatagramSocketMonitor monitor : monitors) {
-        monitor.onSend(p);
-      }
     }
-  }
 
-  @Override
-  public synchronized void receive(DatagramPacket p) throws IOException {
-    originalDatagramSocket.receive(p);
-    if (monitors != null) {
-      for (DatagramSocketMonitor monitor : monitors) {
-        monitor.onReceive(p);
-      }
+    public MonitorDatagramSocketWrapper(DatagramSocket datagramSocket) throws SocketException {
+        this.originalDatagramSocket = datagramSocket;
     }
-  }
 
-  @Override
-  public synchronized void bind(SocketAddress addr) throws SocketException {
-    //This class is only a wrapper, this method will do nothing.
-  }
 
-  @Override
-  public void connect(InetAddress address, int port) {
-    originalDatagramSocket.connect(address, port);
-  }
+    public MonitorDatagramSocketWrapper(DatagramSocket datagramSocket, DatagramSocketMonitor...
+            monitors) throws SocketException {
+        this.originalDatagramSocket = datagramSocket;
+        this.monitors = new ArrayList<>(monitors.length);
+        Collections.addAll(this.monitors, monitors);
+    }
 
-  @Override
-  public boolean isBound() {
-    return originalDatagramSocket.isBound();
-  }
+    public static void main(String[] args) throws SocketException {
+        new MonitorDatagramSocketWrapper();
+    }
 
-  @Override
-  public void connect(SocketAddress addr) throws SocketException {
-    originalDatagramSocket.connect(addr);
-  }
+    public DatagramSocket getOriginalDatagramSocket() {
+        return originalDatagramSocket;
+    }
 
-  @Override
-  public void disconnect() {
-    originalDatagramSocket.disconnect();
-  }
+    public void setOriginalDatagramSocket(DatagramSocket originalDatagramSocket) {
+        this.originalDatagramSocket = originalDatagramSocket;
+    }
 
-  @Override
-  public boolean isConnected() {
-    return originalDatagramSocket.isConnected();
-  }
+    public List<DatagramSocketMonitor> getMonitors() {
+        return monitors;
+    }
 
-  @Override
-  public InetAddress getInetAddress() {
-    return originalDatagramSocket.getInetAddress();
-  }
+    public void setMonitors(List<DatagramSocketMonitor> monitors) {
+        this.monitors = monitors;
+    }
 
-  @Override
-  public int getPort() {
-    return originalDatagramSocket.getPort();
-  }
+    @Override
+    public void send(DatagramPacket p) throws IOException {
+        originalDatagramSocket.send(p);
+        if (monitors != null) {
+            for (DatagramSocketMonitor monitor : monitors) {
+                monitor.onSend(p);
+            }
+        }
+    }
 
-  @Override
-  public SocketAddress getLocalSocketAddress() {
-    return originalDatagramSocket.getLocalSocketAddress();
-  }
+    @Override
+    public synchronized void receive(DatagramPacket p) throws IOException {
+        originalDatagramSocket.receive(p);
+        if (monitors != null) {
+            for (DatagramSocketMonitor monitor : monitors) {
+                monitor.onReceive(p);
+            }
+        }
+    }
 
-  @Override
-  public SocketAddress getRemoteSocketAddress() {
-    return originalDatagramSocket.getRemoteSocketAddress();
-  }
+    @Override
+    public synchronized void bind(SocketAddress addr) throws SocketException {
+        //This class is only a wrapper, this method will do nothing.
+    }
 
-  @Override
-  public InetAddress getLocalAddress() {
-    return originalDatagramSocket.getLocalAddress();
-  }
+    @Override
+    public void connect(InetAddress address, int port) {
+        originalDatagramSocket.connect(address, port);
+    }
 
-  @Override
-  public int getLocalPort() {
-    return originalDatagramSocket.getLocalPort();
-  }
+    @Override
+    public boolean isBound() {
+        return originalDatagramSocket.isBound();
+    }
 
-  @Override
-  public synchronized int getSoTimeout() throws SocketException {
-    return originalDatagramSocket.getSoTimeout();
-  }
+    @Override
+    public void connect(SocketAddress addr) throws SocketException {
+        originalDatagramSocket.connect(addr);
+    }
 
-  @Override
-  public synchronized void setSoTimeout(int timeout) throws SocketException {
-    originalDatagramSocket.setSoTimeout(timeout);
-  }
+    @Override
+    public void disconnect() {
+        originalDatagramSocket.disconnect();
+    }
 
-  @Override
-  public synchronized int getSendBufferSize() throws SocketException {
-    return originalDatagramSocket.getSendBufferSize();
-  }
+    @Override
+    public boolean isConnected() {
+        return originalDatagramSocket.isConnected();
+    }
 
-  @Override
-  public synchronized void setSendBufferSize(int size) throws SocketException {
-    originalDatagramSocket.setSendBufferSize(size);
-  }
+    @Override
+    public InetAddress getInetAddress() {
+        return originalDatagramSocket.getInetAddress();
+    }
 
-  @Override
-  public synchronized int getReceiveBufferSize() throws SocketException {
-    return originalDatagramSocket.getReceiveBufferSize();
-  }
+    @Override
+    public int getPort() {
+        return originalDatagramSocket.getPort();
+    }
 
-  @Override
-  public synchronized void setReceiveBufferSize(int size) throws SocketException {
-    originalDatagramSocket.setReceiveBufferSize(size);
-  }
+    @Override
+    public SocketAddress getLocalSocketAddress() {
+        return originalDatagramSocket.getLocalSocketAddress();
+    }
 
-  @Override
-  public synchronized boolean getReuseAddress() throws SocketException {
-    return originalDatagramSocket.getReuseAddress();
-  }
+    @Override
+    public SocketAddress getRemoteSocketAddress() {
+        return originalDatagramSocket.getRemoteSocketAddress();
+    }
 
-  @Override
-  public synchronized void setReuseAddress(boolean on) throws SocketException {
-    originalDatagramSocket.setReuseAddress(on);
-  }
+    @Override
+    public InetAddress getLocalAddress() {
+        return originalDatagramSocket.getLocalAddress();
+    }
 
-  @Override
-  public synchronized boolean getBroadcast() throws SocketException {
-    return originalDatagramSocket.getBroadcast();
-  }
+    @Override
+    public int getLocalPort() {
+        return originalDatagramSocket.getLocalPort();
+    }
 
-  @Override
-  public synchronized void setBroadcast(boolean on) throws SocketException {
-    originalDatagramSocket.setBroadcast(on);
-  }
+    @Override
+    public synchronized int getSoTimeout() throws SocketException {
+        return originalDatagramSocket.getSoTimeout();
+    }
 
-  @Override
-  public synchronized int getTrafficClass() throws SocketException {
-    return originalDatagramSocket.getTrafficClass();
-  }
+    @Override
+    public synchronized void setSoTimeout(int timeout) throws SocketException {
+        originalDatagramSocket.setSoTimeout(timeout);
+    }
 
-  @Override
-  public synchronized void setTrafficClass(int tc) throws SocketException {
-    originalDatagramSocket.setTrafficClass(tc);
-  }
+    @Override
+    public synchronized int getSendBufferSize() throws SocketException {
+        return originalDatagramSocket.getSendBufferSize();
+    }
 
-  @Override
-  public void close() {
-    originalDatagramSocket.close();
-  }
+    @Override
+    public synchronized void setSendBufferSize(int size) throws SocketException {
+        originalDatagramSocket.setSendBufferSize(size);
+    }
 
-  @Override
-  public boolean isClosed() {
-    return originalDatagramSocket.isClosed();
-  }
+    @Override
+    public synchronized int getReceiveBufferSize() throws SocketException {
+        return originalDatagramSocket.getReceiveBufferSize();
+    }
 
-  @Override
-  public DatagramChannel getChannel() {
-    return originalDatagramSocket.getChannel();
-  }
+    @Override
+    public synchronized void setReceiveBufferSize(int size) throws SocketException {
+        originalDatagramSocket.setReceiveBufferSize(size);
+    }
+
+    @Override
+    public synchronized boolean getReuseAddress() throws SocketException {
+        return originalDatagramSocket.getReuseAddress();
+    }
+
+    @Override
+    public synchronized void setReuseAddress(boolean on) throws SocketException {
+        originalDatagramSocket.setReuseAddress(on);
+    }
+
+    @Override
+    public synchronized boolean getBroadcast() throws SocketException {
+        return originalDatagramSocket.getBroadcast();
+    }
+
+    @Override
+    public synchronized void setBroadcast(boolean on) throws SocketException {
+        originalDatagramSocket.setBroadcast(on);
+    }
+
+    @Override
+    public synchronized int getTrafficClass() throws SocketException {
+        return originalDatagramSocket.getTrafficClass();
+    }
+
+    @Override
+    public synchronized void setTrafficClass(int tc) throws SocketException {
+        originalDatagramSocket.setTrafficClass(tc);
+    }
+
+    @Override
+    public void close() {
+        originalDatagramSocket.close();
+    }
+
+    @Override
+    public boolean isClosed() {
+        return originalDatagramSocket.isClosed();
+    }
+
+    @Override
+    public DatagramChannel getChannel() {
+        return originalDatagramSocket.getChannel();
+    }
 }

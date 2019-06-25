@@ -38,77 +38,79 @@ import java.net.SocketAddress;
  */
 public final class TCPTelnet implements Telnet {
 
-  private TelnetSocketInitializer socketInitializer;
+    private TelnetSocketInitializer socketInitializer;
 
-  private SocksProxy proxy;
+    private SocksProxy proxy;
 
-  public TCPTelnet() {
-  }
-
-  public TCPTelnet(SocksProxy proxy) {
-    this.proxy = proxy;
-  }
-
-  @Override public byte[] request(final byte[] outputBytes, final String host, final int port)
-      throws IOException {
-    return request(outputBytes, new InetSocketAddress(host, port));
-  }
-
-  @Override public byte[] request(final byte[] outputBytes, final SocketAddress address)
-      throws IOException {
-    InputStream inputStream = null;
-    OutputStream outputStream = null;
-    ByteArrayOutputStream cache = null;
-    Socket socket = null;
-    if (proxy != null) {
-      socket = new SocksSocket(proxy);
-    } else {
-      socket = new Socket();
+    public TCPTelnet() {
     }
-    byte[] response = null;
-    IOException exception = null;
-    try {
-      if (socketInitializer != null) {
-        socket = socketInitializer.init(socket);
-      }
-      socket.connect(address);
-      outputStream = new BufferedOutputStream(socket.getOutputStream());
-      inputStream = new BufferedInputStream(socket.getInputStream());
-      outputStream.write(outputBytes);
-      outputStream.flush();
-      cache = new ByteArrayOutputStream();
-      byte[] buffer = new byte[1024 * 5];
-      int length = 0;
-      while ((length = inputStream.read(buffer)) > 0) {
-        cache.write(buffer, 0, length);
-      }
-      response = cache.toByteArray();
-    } catch (IOException e) {
-      exception = e;
-    } finally {
-      ResourceUtil.close(inputStream);
-      ResourceUtil.close(outputStream);
-      ResourceUtil.close(socket);
+
+    public TCPTelnet(SocksProxy proxy) {
+        this.proxy = proxy;
     }
-    if (exception != null) {
-      throw exception;
+
+    @Override
+    public byte[] request(final byte[] outputBytes, final String host, final int port)
+            throws IOException {
+        return request(outputBytes, new InetSocketAddress(host, port));
     }
-    return response;
-  }
 
-  public TelnetSocketInitializer getSocketInitializer() {
-    return socketInitializer;
-  }
+    @Override
+    public byte[] request(final byte[] outputBytes, final SocketAddress address)
+            throws IOException {
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+        ByteArrayOutputStream cache = null;
+        Socket socket = null;
+        if (proxy != null) {
+            socket = new SocksSocket(proxy);
+        } else {
+            socket = new Socket();
+        }
+        byte[] response = null;
+        IOException exception = null;
+        try {
+            if (socketInitializer != null) {
+                socket = socketInitializer.init(socket);
+            }
+            socket.connect(address);
+            outputStream = new BufferedOutputStream(socket.getOutputStream());
+            inputStream = new BufferedInputStream(socket.getInputStream());
+            outputStream.write(outputBytes);
+            outputStream.flush();
+            cache = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024 * 5];
+            int length = 0;
+            while ((length = inputStream.read(buffer)) > 0) {
+                cache.write(buffer, 0, length);
+            }
+            response = cache.toByteArray();
+        } catch (IOException e) {
+            exception = e;
+        } finally {
+            ResourceUtil.close(inputStream);
+            ResourceUtil.close(outputStream);
+            ResourceUtil.close(socket);
+        }
+        if (exception != null) {
+            throw exception;
+        }
+        return response;
+    }
 
-  public void setSocketInitializer(final TelnetSocketInitializer socketInitializer) {
-    this.socketInitializer = socketInitializer;
-  }
+    public TelnetSocketInitializer getSocketInitializer() {
+        return socketInitializer;
+    }
 
-  public SocksProxy getProxy() {
-    return proxy;
-  }
+    public void setSocketInitializer(final TelnetSocketInitializer socketInitializer) {
+        this.socketInitializer = socketInitializer;
+    }
 
-  public void setProxy(SocksProxy proxy) {
-    this.proxy = proxy;
-  }
+    public SocksProxy getProxy() {
+        return proxy;
+    }
+
+    public void setProxy(SocksProxy proxy) {
+        this.proxy = proxy;
+    }
 }

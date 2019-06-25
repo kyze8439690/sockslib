@@ -1,5 +1,7 @@
 package sockslib.common.net;
 
+import static androidx.core.util.Preconditions.checkNotNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -11,8 +13,6 @@ import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The class <code>MonitorSocketWrapper</code> is wrapper of {@link java.net.Socket}.

@@ -14,8 +14,10 @@
 
 package sockslib.server.listener;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import android.util.Log;
+
+import java.util.Locale;
+
 import sockslib.common.AddressType;
 import sockslib.server.Session;
 import sockslib.server.msg.CommandMessage;
@@ -29,30 +31,32 @@ import sockslib.server.msg.CommandMessage;
  */
 public class LoggingListener implements SessionListener {
 
-  private static final Logger logger = LoggerFactory.getLogger(LoggingListener.class);
+    private static final String TAG = "LoggingListener";
 
-  @Override
-  public void onCreate(Session session) throws CloseSessionException {
-    logger.info("Create SESSION[{}] for {}", session.getId(), session.getClientAddress());
-  }
+    @Override
+    public void onCreate(Session session) throws CloseSessionException {
+        Log.i(TAG, String.format("Create SESSION[%d] for %s", session.getId(),
+                session.getClientAddress()));
+    }
 
-  @Override
-  public void onCommand(Session session, CommandMessage message) throws CloseSessionException {
-    logger.info("SESSION[{}] request:{}  {}:{}", session.getId(), message.getCommand(),
-        message.getAddressType() != AddressType.DOMAIN_NAME ?
-            message.getInetAddress() :
-            message.getHost(), message.getPort());
-  }
+    @Override
+    public void onCommand(Session session, CommandMessage message) throws CloseSessionException {
+        Log.i(TAG, String.format("SESSION[%d] request:%s  %s:%d", session.getId(), message.getCommand(),
+                message.getAddressType() != AddressType.DOMAIN_NAME ?
+                        message.getInetAddress() :
+                        message.getHost(), message.getPort()));
+    }
 
-  @Override
-  public void onClose(Session session) {
-    logger.info("SESSION[{}] closed", session.getId());
-  }
+    @Override
+    public void onClose(Session session) {
+        Log.i(TAG, "SESSION[" + session.getId() + "] closed");
+    }
 
-  @Override
-  public void onException(Session session, Exception exception) {
-    logger.error("SESSION[{}] occurred error:{}, message:{}", session.getId(), exception.getClass
-        ().getSimpleName(), exception.getMessage());
-    exception.printStackTrace();
-  }
+    @Override
+    public void onException(Session session, Exception exception) {
+        exception = new Exception(String.format(Locale.getDefault(),
+                "SESSION[%d] occurred error:%s, message:%s", session.getId(),
+                exception.getClass().getSimpleName(), exception.getMessage()));
+        exception.printStackTrace();
+    }
 }

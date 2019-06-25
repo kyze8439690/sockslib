@@ -1,11 +1,11 @@
 /*
  * Copyright 2015-2025 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -14,11 +14,7 @@
 
 package sockslib.server;
 
-import sockslib.common.Socks5DatagramPacketHandler;
-import sockslib.common.net.MonitorDatagramSocketWrapper;
-import sockslib.common.net.NetworkMonitor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import android.util.Log;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -27,6 +23,10 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
+
+import sockslib.common.Socks5DatagramPacketHandler;
+import sockslib.common.net.MonitorDatagramSocketWrapper;
+import sockslib.common.net.NetworkMonitor;
 
 /**
  * The class <code>UDPRelayServer</code> represents a UDP relay server.
@@ -43,257 +43,253 @@ import java.net.SocketException;
  */
 public class UDPRelayServer implements Runnable {
 
-  /**
-   * Logger that subclasses also can use.
-   */
-  protected static final Logger logger = LoggerFactory.getLogger(UDPRelayServer.class);
+    private static final String TAG = "UDPRelayServer";
 
-  /**
-   * SOCKS5 datagram packet handle.
-   */
-  private Socks5DatagramPacketHandler datagramPacketHandler = new Socks5DatagramPacketHandler();
+    /**
+     * SOCKS5 datagram packet handle.
+     */
+    private Socks5DatagramPacketHandler datagramPacketHandler = new Socks5DatagramPacketHandler();
 
-  /**
-   * UDP server.
-   */
-  private DatagramSocket server;
+    /**
+     * UDP server.
+     */
+    private DatagramSocket server;
 
-  /**
-   * Buffer size.
-   */
-  private int bufferSize = 1024 * 1024 * 5;
+    /**
+     * Buffer size.
+     */
+    private int bufferSize = 1024 * 1024 * 5;
 
-  /**
-   * Running thread.
-   */
-  private Thread thread;
+    /**
+     * Running thread.
+     */
+    private Thread thread;
 
-  /**
-   * A status flag.
-   */
-  private boolean running = false;
+    /**
+     * A status flag.
+     */
+    private boolean running = false;
 
-  /**
-   * Client's IP address.
-   */
-  private InetAddress clientAddress;
+    /**
+     * Client's IP address.
+     */
+    private InetAddress clientAddress;
 
-  /**
-   * Client's port.
-   */
-  private int clientPort;
+    /**
+     * Client's port.
+     */
+    private int clientPort;
 
-  private NetworkMonitor networkMonitor;
+    private NetworkMonitor networkMonitor;
 
-  /**
-   * Constructs a {@link UDPRelayServer} instance.
-   */
-  public UDPRelayServer() {
-  }
-
-  /**
-   * Constructs a {@link UDPRelayServer} instance with client's IP address and port. The UDP relay
-   * server will use client's IP and port to find out where the datagram packet from.
-   *
-   * @param clientInetAddress Client's IP address.
-   * @param clientPort        Client's port.
-   */
-  public UDPRelayServer(InetAddress clientInetAddress, int clientPort) {
-    this(new InetSocketAddress(clientInetAddress, clientPort));
-  }
-
-  public UDPRelayServer(SocketAddress clientSocketAddress) {
-    if (clientSocketAddress instanceof InetSocketAddress) {
-      clientAddress = ((InetSocketAddress) clientSocketAddress).getAddress();
-      clientPort = ((InetSocketAddress) clientSocketAddress).getPort();
-    } else {
-      throw new IllegalArgumentException("Only support java.net.InetSocketAddress");
+    /**
+     * Constructs a {@link UDPRelayServer} instance.
+     */
+    public UDPRelayServer() {
     }
-  }
 
-  /**
-   * Starts a UDP relay server.
-   *
-   * @return Server bind socket address.
-   * @throws SocketException If a SOCKS protocol error occurred.
-   */
-  public SocketAddress start() throws SocketException {
-    running = true;
-    server = new DatagramSocket();
-    if (networkMonitor != null) {
-      server = new MonitorDatagramSocketWrapper(server, networkMonitor);
+    /**
+     * Constructs a {@link UDPRelayServer} instance with client's IP address and port. The UDP relay
+     * server will use client's IP and port to find out where the datagram packet from.
+     *
+     * @param clientInetAddress Client's IP address.
+     * @param clientPort        Client's port.
+     */
+    public UDPRelayServer(InetAddress clientInetAddress, int clientPort) {
+        this(new InetSocketAddress(clientInetAddress, clientPort));
     }
-    SocketAddress socketAddress = server.getLocalSocketAddress();
-    thread = new Thread(this);
-    thread.start();
-    return socketAddress;
-  }
 
-  /**
-   * Stop the UDP relay server.
-   */
-  public void stop() {
-    if (running) {
-      running = false;
-      thread.interrupt();
-      if (!server.isClosed()) {
-        server.close();
-      }
-    }
-  }
-
-  @Override
-  public void run() {
-    try {
-      byte[] buffer = new byte[bufferSize];
-      while (running) {
-        DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-        server.receive(packet);
-        if (isFromClient(packet)) {
-          datagramPacketHandler.decapsulate(packet);
-          server.send(packet);
+    public UDPRelayServer(SocketAddress clientSocketAddress) {
+        if (clientSocketAddress instanceof InetSocketAddress) {
+            clientAddress = ((InetSocketAddress) clientSocketAddress).getAddress();
+            clientPort = ((InetSocketAddress) clientSocketAddress).getPort();
         } else {
-          packet =
-              datagramPacketHandler.encapsulate(packet, new InetSocketAddress(clientAddress,
-                  clientPort));
-          server.send(packet);
+            throw new IllegalArgumentException("Only support java.net.InetSocketAddress");
         }
-      }
-    } catch (IOException e) {
-      if (e.getMessage().equalsIgnoreCase("Socket closed") && !running) {
-        logger.debug("UDP relay server stopped");
-      } else {
-        logger.error(e.getMessage(), e);
-      }
     }
-  }
 
-  /**
-   * Returns <code>true</code> if the the datagram packet from client.
-   *
-   * @param packet Datagram packet the UDP server received.
-   * @return If the datagram packet is sent from client, it will return <code>true</code>.
-   */
-  protected boolean isFromClient(DatagramPacket packet) {
-
-    if (packet.getPort() == clientPort && clientAddress.equals(packet.getAddress())) {
-      return true;
+    /**
+     * Starts a UDP relay server.
+     *
+     * @return Server bind socket address.
+     * @throws SocketException If a SOCKS protocol error occurred.
+     */
+    public SocketAddress start() throws SocketException {
+        running = true;
+        server = new DatagramSocket();
+        if (networkMonitor != null) {
+            server = new MonitorDatagramSocketWrapper(server, networkMonitor);
+        }
+        SocketAddress socketAddress = server.getLocalSocketAddress();
+        thread = new Thread(this);
+        thread.start();
+        return socketAddress;
     }
-    // client is in local.
-    else if (packet.getPort() == clientPort && clientAddress.getHostAddress().startsWith("127.")) {
-      return true;
+
+    /**
+     * Stop the UDP relay server.
+     */
+    public void stop() {
+        if (running) {
+            running = false;
+            thread.interrupt();
+            if (!server.isClosed()) {
+                server.close();
+            }
+        }
     }
-    return false;
-  }
 
-  /**
-   * Return UDP server.
-   *
-   * @return UDP server.
-   */
-  public DatagramSocket getServer() {
-    return server;
-  }
+    @Override
+    public void run() {
+        try {
+            byte[] buffer = new byte[bufferSize];
+            while (running) {
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                server.receive(packet);
+                if (isFromClient(packet)) {
+                    datagramPacketHandler.decapsulate(packet);
+                    server.send(packet);
+                } else {
+                    packet =
+                            datagramPacketHandler.encapsulate(packet,
+                                    new InetSocketAddress(clientAddress,
+                                            clientPort));
+                    server.send(packet);
+                }
+            }
+        } catch (IOException e) {
+            if (e.getMessage().equalsIgnoreCase("Socket closed") && !running) {
+                Log.d(TAG, "UDP relay server stopped");
+            } else {
+                e.printStackTrace();
+            }
+        }
+    }
 
-  /**
-   * Sets UDP server.
-   *
-   * @param server UDP server.
-   */
-  public void setServer(DatagramSocket server) {
-    this.server = server;
-  }
+    /**
+     * Returns <code>true</code> if the the datagram packet from client.
+     *
+     * @param packet Datagram packet the UDP server received.
+     * @return If the datagram packet is sent from client, it will return <code>true</code>.
+     */
+    protected boolean isFromClient(DatagramPacket packet) {
 
-  /**
-   * Returns buffer size.
-   *
-   * @return Buffer size.
-   */
-  public int getBufferSize() {
-    return bufferSize;
-  }
+        if (packet.getPort() == clientPort && clientAddress.equals(packet.getAddress())) {
+            return true;
+        }
+        // client is in local.
+        else return packet.getPort() == clientPort && clientAddress.getHostAddress().startsWith(
+                "127.");
+    }
 
-  /**
-   * Sets buffer size.
-   *
-   * @param bufferSize Buffer size.
-   */
-  public void setBufferSize(int bufferSize) {
-    this.bufferSize = bufferSize;
-  }
+    /**
+     * Return UDP server.
+     *
+     * @return UDP server.
+     */
+    public DatagramSocket getServer() {
+        return server;
+    }
 
-  /**
-   * Returns datagram packet handler.
-   *
-   * @return the instance of {@link Socks5DatagramPacketHandler}.
-   */
-  public Socks5DatagramPacketHandler getDatagramPacketHandler() {
-    return datagramPacketHandler;
-  }
+    /**
+     * Sets UDP server.
+     *
+     * @param server UDP server.
+     */
+    public void setServer(DatagramSocket server) {
+        this.server = server;
+    }
 
-  /**
-   * Sets datagram packet handler.
-   *
-   * @param datagramPacketHandler Datagram packet handler.
-   */
-  public void setDatagramPacketHandler(Socks5DatagramPacketHandler datagramPacketHandler) {
-    this.datagramPacketHandler = datagramPacketHandler;
-  }
+    /**
+     * Returns buffer size.
+     *
+     * @return Buffer size.
+     */
+    public int getBufferSize() {
+        return bufferSize;
+    }
 
-  /**
-   * Returns client's IP address.
-   *
-   * @return client's IP address.
-   */
-  public InetAddress getClientAddress() {
-    return clientAddress;
-  }
+    /**
+     * Sets buffer size.
+     *
+     * @param bufferSize Buffer size.
+     */
+    public void setBufferSize(int bufferSize) {
+        this.bufferSize = bufferSize;
+    }
 
-  /**
-   * Sets client's IP address.
-   *
-   * @param clientAddress client's IP address.
-   */
-  public void setClientAddress(InetAddress clientAddress) {
-    this.clientAddress = clientAddress;
-  }
+    /**
+     * Returns datagram packet handler.
+     *
+     * @return the instance of {@link Socks5DatagramPacketHandler}.
+     */
+    public Socks5DatagramPacketHandler getDatagramPacketHandler() {
+        return datagramPacketHandler;
+    }
 
-  /**
-   * Returns client's port.
-   *
-   * @return client's port.
-   */
-  public int getClientPort() {
-    return clientPort;
-  }
+    /**
+     * Sets datagram packet handler.
+     *
+     * @param datagramPacketHandler Datagram packet handler.
+     */
+    public void setDatagramPacketHandler(Socks5DatagramPacketHandler datagramPacketHandler) {
+        this.datagramPacketHandler = datagramPacketHandler;
+    }
 
-  /**
-   * Sets client's port.
-   *
-   * @param clientPort client's port.
-   */
-  public void setClientPort(int clientPort) {
-    this.clientPort = clientPort;
-  }
+    /**
+     * Returns client's IP address.
+     *
+     * @return client's IP address.
+     */
+    public InetAddress getClientAddress() {
+        return clientAddress;
+    }
 
-  /**
-   * Return <code>true</code> if the UDP relay server is running.
-   *
-   * @return If the UDP relay server is running, it will return <code>true</code>.
-   */
-  public boolean isRunning() {
-    return running;
-  }
+    /**
+     * Sets client's IP address.
+     *
+     * @param clientAddress client's IP address.
+     */
+    public void setClientAddress(InetAddress clientAddress) {
+        this.clientAddress = clientAddress;
+    }
 
-  public NetworkMonitor getNetworkMonitor() {
-    return networkMonitor;
-  }
+    /**
+     * Returns client's port.
+     *
+     * @return client's port.
+     */
+    public int getClientPort() {
+        return clientPort;
+    }
 
-  public void setNetworkMonitor(NetworkMonitor networkMonitor) {
-    this.networkMonitor = networkMonitor;
-  }
+    /**
+     * Sets client's port.
+     *
+     * @param clientPort client's port.
+     */
+    public void setClientPort(int clientPort) {
+        this.clientPort = clientPort;
+    }
 
-  public Thread getServerThread() {
-    return thread;
-  }
+    /**
+     * Return <code>true</code> if the UDP relay server is running.
+     *
+     * @return If the UDP relay server is running, it will return <code>true</code>.
+     */
+    public boolean isRunning() {
+        return running;
+    }
+
+    public NetworkMonitor getNetworkMonitor() {
+        return networkMonitor;
+    }
+
+    public void setNetworkMonitor(NetworkMonitor networkMonitor) {
+        this.networkMonitor = networkMonitor;
+    }
+
+    public Thread getServerThread() {
+        return thread;
+    }
 }

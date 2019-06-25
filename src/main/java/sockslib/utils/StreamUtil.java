@@ -14,8 +14,6 @@
 
 package sockslib.utils;
 
-import com.google.common.base.Charsets;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -28,23 +26,23 @@ import java.io.InputStream;
  */
 public class StreamUtil {
 
-  public static int checkEnd(int b) throws IOException {
-    if (b < 0) {
-      throw new IOException("End of stream");
-    } else {
-      return b;
+    public static int checkEnd(int b) throws IOException {
+        if (b < 0) {
+            throw new IOException("End of stream");
+        } else {
+            return b;
+        }
     }
-  }
 
-  public static byte[] read(InputStream inputStream, int length) throws IOException {
-    byte[] bytes = new byte[length];
-    for (int i = 0; i < length; i++) {
-      bytes[i] = (byte) checkEnd(inputStream.read());
+    public static byte[] read(InputStream inputStream, int length) throws IOException {
+        byte[] bytes = new byte[length];
+        for (int i = 0; i < length; i++) {
+            bytes[i] = (byte) checkEnd(inputStream.read());
+        }
+        return bytes;
     }
-    return bytes;
-  }
 
-  public static String readString(InputStream inputStream, int length) throws IOException {
-    return new String(read(inputStream, length), Charsets.UTF_8);
-  }
+    public static String readString(InputStream inputStream, int length) throws IOException {
+        return new String(read(inputStream, length), "UTF-8");
+    }
 }

@@ -1,11 +1,11 @@
 /*
  * Copyright 2015-2025 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -24,72 +24,72 @@ package sockslib.server.msg;
  */
 public enum ServerReply {
 
-  /**
-   * Succeeded.
-   */
-  SUCCEEDED(0x00),
+    /**
+     * Succeeded.
+     */
+    SUCCEEDED(0x00),
 
-  /**
-   * General SOCKS server failure.
-   */
-  GENERAL_SOCKS_SERVER_FAILURE(0x01),
+    /**
+     * General SOCKS server failure.
+     */
+    GENERAL_SOCKS_SERVER_FAILURE(0x01),
 
-  /**
-   * Connection not allowed by ruleset.
-   */
-  CONNECTION_NOT_ALLOWED_BY_RULESET(0x02),
+    /**
+     * Connection not allowed by ruleset.
+     */
+    CONNECTION_NOT_ALLOWED_BY_RULESET(0x02),
 
-  /**
-   * Network unreachable.
-   */
-  NETWORK_UNREACHABLE(0x03),
+    /**
+     * Network unreachable.
+     */
+    NETWORK_UNREACHABLE(0x03),
 
-  /**
-   * Host unreachable.
-   */
-  HOST_UNREACHABLE(0x04),
+    /**
+     * Host unreachable.
+     */
+    HOST_UNREACHABLE(0x04),
 
-  /**
-   * Connection refused.
-   */
-  CONNECTION_REFUSED(0x05),
+    /**
+     * Connection refused.
+     */
+    CONNECTION_REFUSED(0x05),
 
-  /**
-   * TTL expired.
-   */
-  TTL_EXPIRED(0x06),
+    /**
+     * TTL expired.
+     */
+    TTL_EXPIRED(0x06),
 
-  /**
-   * Command not supported.
-   */
-  COMMAND_NOT_SUPPORTED(0x07),
+    /**
+     * Command not supported.
+     */
+    COMMAND_NOT_SUPPORTED(0x07),
 
-  /**
-   * Address type not supported.
-   */
-  ADDRESS_TYPE_NOT_SUPPORTED(0x08);
+    /**
+     * Address type not supported.
+     */
+    ADDRESS_TYPE_NOT_SUPPORTED(0x08);
 
-  /**
-   * Code of the reply.
-   */
-  private byte value;
+    /**
+     * Code of the reply.
+     */
+    private byte value;
 
-  /**
-   * A private constructor.
-   *
-   * @param value Reply code.
-   */
-  private ServerReply(int value) {
-    this.value = (byte) value;
-  }
+    /**
+     * A private constructor.
+     *
+     * @param value Reply code.
+     */
+    private ServerReply(int value) {
+        this.value = (byte) value;
+    }
 
-  /**
-   * Returns reply code in byte.
-   *
-   * @return Reply code in byte.
-   */
-  public byte getValue() {
-    return value;
-  }
+    /**
+     * Returns reply code in byte.
+     *
+     * @return Reply code in byte.
+     */
+    public byte getValue() {
+        return value;
+    }
 
 }

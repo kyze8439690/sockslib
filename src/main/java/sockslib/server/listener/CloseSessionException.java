@@ -24,24 +24,24 @@ package sockslib.server.listener;
  */
 public class CloseSessionException extends Exception {
 
-  public CloseSessionException() {
-    super("Stop Process");
-  }
+    public CloseSessionException() {
+        super("Stop Process");
+    }
 
-  public CloseSessionException(Throwable cause) {
-    super(cause);
-  }
+    public CloseSessionException(Throwable cause) {
+        super(cause);
+    }
 
-  public CloseSessionException(String message) {
-    super(message);
-  }
+    public CloseSessionException(String message) {
+        super(message);
+    }
 
-  public CloseSessionException(String message, Throwable cause) {
-    super(message, cause);
-  }
+    public CloseSessionException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-  protected CloseSessionException(String message, Throwable cause, boolean enableSuppression,
-      boolean writableStackTrace) {
-    super(message, cause, enableSuppression, writableStackTrace);
-  }
+    protected CloseSessionException(String message, Throwable cause, boolean enableSuppression,
+            boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
 }

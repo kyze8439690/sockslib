@@ -16,8 +16,7 @@
 
 package sockslib.utils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import android.util.Log;
 
 /**
  * @author Youchao Feng
@@ -26,15 +25,15 @@ import org.slf4j.LoggerFactory;
  */
 public class TimerThread extends Thread {
 
-  private static final Logger logger = LoggerFactory.getLogger(TimerThread.class);
-  private Timer timer;
+    private static final String TAG = "TimerThread";
+    private Timer timer;
 
-  public TimerThread(Timer timer) {
-    this.timer = timer;
-  }
+    public TimerThread(Timer timer) {
+        this.timer = timer;
+    }
 
-  @Override
-  public void run() {
-    logger.info("Total Run Time: {}ms", timer.stop());
-  }
+    @Override
+    public void run() {
+        Log.i(TAG, "Total Run Time: " + timer.stop() + "ms");
+    }
 }

@@ -24,11 +24,12 @@ import sockslib.server.Session;
 @FunctionalInterface
 public interface ExceptionListener {
 
-  /**
-   * When a session occurred an exception, this method will be called by {@link sockslib.server * .SocksHandler}.
-   *
-   * @param session   Current session.
-   * @param exception Exception occurred in session.
-   */
-  void onException(Session session, Exception exception);
+    /**
+     * When a session occurred an exception, this method will be called by {@link sockslib.server *
+     * .SocksHandler}.
+     *
+     * @param session   Current session.
+     * @param exception Exception occurred in session.
+     */
+    void onException(Session session, Exception exception);
 }

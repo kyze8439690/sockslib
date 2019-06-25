@@ -1,11 +1,11 @@
 /*
  * Copyright 2015-2025 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -32,71 +32,71 @@ import sockslib.server.manager.UserManager;
  */
 public class UsernamePasswordAuthenticator implements Authenticator {
 
-  public static final String USER_KEY = "USER";
-  /**
-   * {@link MemoryBasedUserManager} is default.
-   */
-  private UserManager userManager = new MemoryBasedUserManager();
+    public static final String USER_KEY = "USER";
+    /**
+     * {@link MemoryBasedUserManager} is default.
+     */
+    private UserManager userManager = new MemoryBasedUserManager();
 
-  public UsernamePasswordAuthenticator() {
-  }
-
-  public UsernamePasswordAuthenticator(UserManager userManager) {
-    this.userManager = userManager;
-  }
-
-  @Override
-  public void doAuthenticate(Credentials credentials, Session session) throws
-      AuthenticationException {
-    if (credentials instanceof UsernamePasswordCredentials) {
-      String username = credentials.getUserPrincipal().getName();
-      String password = credentials.getPassword();
-      User user = userManager.check(username, password);
-      if (user == null) {
-        authenticationFailed(session);
-      }
-      authenticationSuccess(session, user);
-
-    } else {
-      throw new AuthenticationException("Only support Username/Password Authentication");
+    public UsernamePasswordAuthenticator() {
     }
-  }
 
-  /**
-   * This method will save user in session.
-   *
-   * @param session Current session.
-   * @param user    user.
-   */
-  protected void authenticationSuccess(Session session, User user) {
-    session.setAttribute(USER_KEY, user);
-  }
+    public UsernamePasswordAuthenticator(UserManager userManager) {
+        this.userManager = userManager;
+    }
 
-  /**
-   * This method will throw a {@link AuthenticationException}
-   *
-   * @param session Current session
-   * @throws AuthenticationException {@link AuthenticationException}
-   */
-  protected void authenticationFailed(Session session) throws AuthenticationException {
-    throw new AuthenticationException(
-        "Authentication failed, client from " + session.getClientAddress());
-  }
+    @Override
+    public void doAuthenticate(Credentials credentials, Session session) throws
+            AuthenticationException {
+        if (credentials instanceof UsernamePasswordCredentials) {
+            String username = credentials.getUserPrincipal().getName();
+            String password = credentials.getPassword();
+            User user = userManager.check(username, password);
+            if (user == null) {
+                authenticationFailed(session);
+            }
+            authenticationSuccess(session, user);
 
-  public UserManager getUserManager() {
-    return userManager;
-  }
+        } else {
+            throw new AuthenticationException("Only support Username/Password Authentication");
+        }
+    }
 
-  public void setUserManager(UserManager userManager) {
-    this.userManager = userManager;
-  }
+    /**
+     * This method will save user in session.
+     *
+     * @param session Current session.
+     * @param user    user.
+     */
+    protected void authenticationSuccess(Session session, User user) {
+        session.setAttribute(USER_KEY, user);
+    }
 
-  public void addUser(String username, String password) {
-    userManager.addUser(username, password);
-  }
+    /**
+     * This method will throw a {@link AuthenticationException}
+     *
+     * @param session Current session
+     * @throws AuthenticationException {@link AuthenticationException}
+     */
+    protected void authenticationFailed(Session session) throws AuthenticationException {
+        throw new AuthenticationException(
+                "Authentication failed, client from " + session.getClientAddress());
+    }
 
-  public void deleteUser(String username) {
-    userManager.delete(username);
-  }
+    public UserManager getUserManager() {
+        return userManager;
+    }
+
+    public void setUserManager(UserManager userManager) {
+        this.userManager = userManager;
+    }
+
+    public void addUser(String username, String password) {
+        userManager.addUser(username, password);
+    }
+
+    public void deleteUser(String username) {
+        userManager.delete(username);
+    }
 
 }

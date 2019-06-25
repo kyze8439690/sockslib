@@ -6,5 +6,5 @@ package sockslib.common.net;
  * @date Sep 21, 2015 2:46 PM
  */
 public interface InputStreamMonitor {
-  void onRead(byte[] b);
+    void onRead(byte[] b);
 }

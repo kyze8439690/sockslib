@@ -24,12 +24,12 @@ import sockslib.server.Session;
 @FunctionalInterface
 public interface SessionCreateListener {
 
-  /**
-   * When a session created, this method will be called by {@link sockslib.server.SocksHandler}.
-   *
-   * @param session Current session.
-   * @throws CloseSessionException This exception will tell {@link sockslib.server.SocksHandler}
-   *                               to close session.
-   */
-  void onCreate(Session session) throws CloseSessionException;
+    /**
+     * When a session created, this method will be called by {@link sockslib.server.SocksHandler}.
+     *
+     * @param session Current session.
+     * @throws CloseSessionException This exception will tell {@link sockslib.server.SocksHandler}
+     *                               to close session.
+     */
+    void onCreate(Session session) throws CloseSessionException;
 }

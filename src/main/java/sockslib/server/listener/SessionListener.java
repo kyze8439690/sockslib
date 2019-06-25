@@ -21,6 +21,6 @@ package sockslib.server.listener;
  * @version 1.0
  * @date Sep 30, 2015 12:38 PM
  */
-public interface SessionListener
-    extends SessionCreateListener, SessionCloseListener, CommandListener, ExceptionListener {
+public interface SessionListener extends SessionCreateListener, SessionCloseListener,
+        CommandListener, ExceptionListener {
 }

@@ -1,11 +1,11 @@
 /*
  * Copyright 2015-2025 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -47,36 +47,36 @@ import java.io.IOException;
  */
 public interface SocksMethod {
 
-  /**
-   * method byte.
-   *
-   * @return byte.
-   */
-  int getByte();
+    /**
+     * method byte.
+     *
+     * @return byte.
+     */
+    int getByte();
 
-  /**
-   * Gets method's name.
-   *
-   * @return Name of the method.
-   */
-  String getMethodName();
+    /**
+     * Gets method's name.
+     *
+     * @return Name of the method.
+     */
+    String getMethodName();
 
-  /**
-   * Do method job. This method will be called by SOCKS client.
-   *
-   * @param socksProxy SocksProxy instance.
-   * @throws SocksException If there are any errors about SOCKS protocol.
-   * @throws IOException    if there are any IO errors.
-   */
-  void doMethod(SocksProxy socksProxy) throws SocksException, IOException;
+    /**
+     * Do method job. This method will be called by SOCKS client.
+     *
+     * @param socksProxy SocksProxy instance.
+     * @throws SocksException If there are any errors about SOCKS protocol.
+     * @throws IOException    if there are any IO errors.
+     */
+    void doMethod(SocksProxy socksProxy) throws SocksException, IOException;
 
-  /**
-   * Do method job. This method will be called by SOCKS server.
-   *
-   * @param session Session.
-   * @throws SocksException TODO
-   * @throws IOException    TODO
-   */
-  void doMethod(Session session) throws SocksException, IOException;
+    /**
+     * Do method job. This method will be called by SOCKS server.
+     *
+     * @param session Session.
+     * @throws SocksException TODO
+     * @throws IOException    TODO
+     */
+    void doMethod(Session session) throws SocksException, IOException;
 
 }

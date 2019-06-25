@@ -33,43 +33,44 @@ import java.util.Arrays;
  * @see Telnet
  * @see TCPTelnet
  */
-public final class UDPTelnet implements Telnet{
+public final class UDPTelnet implements Telnet {
 
-  private SocksProxy proxy;
+    private SocksProxy proxy;
 
-  public UDPTelnet(){
+    public UDPTelnet() {
 
-  }
-
-  public UDPTelnet(SocksProxy proxy){
-    this.proxy = proxy;
-  }
-
-  @Override
-  public byte[] request(final byte[] sendData, final String host, final int port) throws IOException{
-    return request(sendData, new InetSocketAddress(host, port));
-  }
-
-  @Override
-  public byte[] request(final byte[] sendData, final SocketAddress address) throws IOException{
-    DatagramSocket socket = null;
-    if(proxy != null){
-      socket = new Socks5DatagramSocket(proxy);
-    }else{
-      socket = new DatagramSocket();
     }
-    socket.send(new DatagramPacket(sendData, sendData.length, address));
-    byte[] buffer = new byte[1024];
-    DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-    socket.receive(packet);
-    return Arrays.copyOf(packet.getData(), packet.getLength());
-  }
 
-  public SocksProxy getProxy() {
-    return proxy;
-  }
+    public UDPTelnet(SocksProxy proxy) {
+        this.proxy = proxy;
+    }
 
-  public void setProxy(SocksProxy proxy) {
-    this.proxy = proxy;
-  }
+    @Override
+    public byte[] request(final byte[] sendData, final String host, final int port)
+            throws IOException {
+        return request(sendData, new InetSocketAddress(host, port));
+    }
+
+    @Override
+    public byte[] request(final byte[] sendData, final SocketAddress address) throws IOException {
+        DatagramSocket socket;
+        if (proxy != null) {
+            socket = new Socks5DatagramSocket(proxy);
+        } else {
+            socket = new DatagramSocket();
+        }
+        socket.send(new DatagramPacket(sendData, sendData.length, address));
+        byte[] buffer = new byte[1024];
+        DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+        socket.receive(packet);
+        return Arrays.copyOf(packet.getData(), packet.getLength());
+    }
+
+    public SocksProxy getProxy() {
+        return proxy;
+    }
+
+    public void setProxy(SocksProxy proxy) {
+        this.proxy = proxy;
+    }
 }

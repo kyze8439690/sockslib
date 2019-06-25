@@ -24,6 +24,6 @@ import java.net.SocketException;
  */
 public interface TelnetSocketInitializer {
 
-  Socket init(Socket socket) throws SocketException;
+    Socket init(Socket socket) throws SocketException;
 
 }

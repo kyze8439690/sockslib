@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2015-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,37 +26,36 @@ package sockslib.common;
  */
 public class SSLConfigurationException extends Exception {
 
-  /**
-   *
-   */
-  private static final long serialVersionUID = 1L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-  public SSLConfigurationException() {
-    super();
-    // TODO Auto-generated constructor stub
-  }
+    public SSLConfigurationException() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
-  public SSLConfigurationException(String message, Throwable cause, boolean enableSuppression,
-                                   boolean writableStackTrace) {
-    super(message, cause, enableSuppression, writableStackTrace);
-    // TODO Auto-generated constructor stub
-  }
+    public SSLConfigurationException(String message, Throwable cause, boolean enableSuppression,
+            boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+        // TODO Auto-generated constructor stub
+    }
 
-  public SSLConfigurationException(String message, Throwable cause) {
-    super(message, cause);
-    // TODO Auto-generated constructor stub
-  }
+    public SSLConfigurationException(String message, Throwable cause) {
+        super(message, cause);
+        // TODO Auto-generated constructor stub
+    }
 
-  public SSLConfigurationException(String message) {
-    super(message);
-    // TODO Auto-generated constructor stub
-  }
+    public SSLConfigurationException(String message) {
+        super(message);
+        // TODO Auto-generated constructor stub
+    }
 
-  public SSLConfigurationException(Throwable cause) {
-    super(cause);
-    // TODO Auto-generated constructor stub
-  }
-
+    public SSLConfigurationException(Throwable cause) {
+        super(cause);
+        // TODO Auto-generated constructor stub
+    }
 
 
 }
