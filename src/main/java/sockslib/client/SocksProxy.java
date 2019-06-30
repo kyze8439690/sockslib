@@ -14,11 +14,7 @@
 
 package sockslib.client;
 
-import sockslib.common.AnonymousCredentials;
-import sockslib.common.Credentials;
-import sockslib.common.SocksException;
-import sockslib.common.UsernamePasswordCredentials;
-import sockslib.common.methods.SocksMethod;
+import androidx.annotation.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +24,12 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.util.List;
+
+import sockslib.common.AnonymousCredentials;
+import sockslib.common.Credentials;
+import sockslib.common.SocksException;
+import sockslib.common.UsernamePasswordCredentials;
+import sockslib.common.methods.SocksMethod;
 
 /**
  * The interface <code>SocksProxy</code> define a SOCKS proxy. it's will be used by
@@ -49,6 +51,7 @@ public interface SocksProxy {
      *
      * @return java.net.Socket.
      */
+    @Nullable
     Socket getProxySocket();
 
     /**
@@ -57,7 +60,7 @@ public interface SocksProxy {
      * @param socket a unconnected socket.
      * @return instance of SocksProxy.
      */
-    SocksProxy setProxySocket(Socket socket);
+    SocksProxy setProxySocket(@Nullable Socket socket);
 
     /**
      * Get SOCKS Server port.

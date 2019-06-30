@@ -1,18 +1,4 @@
-/*
- * Copyright 2015-2025 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
- */
-
-package sockslib.client;
+package httpslib.client;
 
 import static androidx.core.util.Preconditions.checkArgument;
 import static androidx.core.util.Preconditions.checkNotNull;
@@ -32,52 +18,19 @@ import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
 
-import sockslib.common.SocksException;
+public class HttpConnectSocket extends Socket {
 
-/**
- * The class <code>SocksSocket</code> is proxy class that help developers use {@link SocksProxy} as
- * same as a java.net.Socket.<br>
- * For example:<br>
- * <pre>
- * SocksProxy proxy = new Socks5(new InetSocketAddress(&quot;127.0.0.1&quot;, 1080));
- * // Setting proxy...
- * Socket socket = new SocksSocket(proxy, new InetSocketAddress(&quot;whois.internic.net&quot;,
- * 43));
- * InputStream inputStream = socket.getInputStream();
- * OutputStream outStream = socket.getOutputStream();
- * // Just use the socket as normal java.net.Socket now.
- * </pre>
- *
- * @author Youchao Feng
- * @version 1.0
- * @date Mar 18, 2015 5:02:31 PM
- */
-public class SocksSocket extends Socket {
+    private static final String TAG = "HttpConnectSocket";
 
-    private static final String TAG = "SocksSocket";
-
-    private SocksProxy proxy;
+    private HttpConnectProxy proxy;
 
     private String remoteServerHost;
-
     private int remoteServerPort;
 
-    /**
-     * Socket that will connect to SOCKS server.
-     */
     private Socket proxySocket;
 
-    /**
-     * Create a socket and connect SOCKS Server.
-     *
-     * @param proxy            Socks proxy.
-     * @param remoteServerHost Remote sever host.
-     * @param remoteServerPort Remote server port.
-     * @throws SocksException If any errors about SOCKS protocol occurred.
-     * @throws IOException    If any IO errors occurred.
-     */
-    public SocksSocket(SocksProxy proxy, String remoteServerHost, int remoteServerPort) throws
-            SocksException, IOException {
+    public HttpConnectSocket(HttpConnectProxy proxy, String remoteServerHost, int remoteServerPort)
+            throws IOException {
         this.proxy = checkNotNull(proxy, "Argument [proxy] may not be null").copy();
         this.proxy.setProxySocket(proxySocket);
         this.remoteServerHost =
@@ -89,70 +42,35 @@ public class SocksSocket extends Socket {
         this.proxy.requestConnect(remoteServerHost, remoteServerPort);
     }
 
-    /**
-     * Same as {@link #SocksSocket(SocksProxy, String, int)}
-     *
-     * @param proxy   Socks proxy.
-     * @param address Remote server's IP address.
-     * @param port    Remote server's port.
-     * @throws SocksException If any error about SOCKS protocol occurs.
-     * @throws IOException    If I/O error occurs.
-     */
-    public SocksSocket(SocksProxy proxy, InetAddress address, int port) throws SocksException,
-            IOException {
+    public HttpConnectSocket(HttpConnectProxy proxy, InetAddress address, int port) throws IOException {
         this(proxy, new InetSocketAddress(address, port));
     }
 
-    public SocksSocket(SocksProxy proxy, SocketAddress socketAddress) throws SocksException,
-            IOException {
-        checkNotNull(proxy, "Argument [proxy] may not be null");
+    public HttpConnectSocket(HttpConnectProxy proxy, InetSocketAddress socketAddress) throws IOException {
+        this.proxy = checkNotNull(proxy, "Argument [proxy] may not be null").copy();
         checkNotNull(socketAddress, "Argument [socketAddress] may not be null");
-        checkArgument(socketAddress instanceof InetSocketAddress, "Unsupported address type");
-        InetSocketAddress address = (InetSocketAddress) socketAddress;
-        this.proxy = proxy.copy();
-        this.remoteServerHost = address.getHostName();
-        this.remoteServerPort = address.getPort();
+        this.remoteServerHost = socketAddress.getHostName();
+        this.remoteServerPort = socketAddress.getPort();
         this.proxy.buildConnection();
         proxySocket = this.proxy.getProxySocket();
         initProxyChain();
-        this.proxy.requestConnect(address.getAddress(), address.getPort());
-
+        this.proxy.requestConnect(socketAddress.getAddress(), socketAddress.getPort());
     }
 
-    /**
-     * Creates an unconnected socket.
-     *
-     * @param proxy SOCKS proxy.
-     * @throws IOException If an I/O error occurred.
-     */
-    public SocksSocket(SocksProxy proxy) throws IOException {
+    public HttpConnectSocket(HttpConnectProxy proxy) throws IOException {
         this(proxy, proxy.createProxySocket());
     }
 
-    /**
-     * Creates a SocksSocket instance with a {@link SocksProxy} and a
-     *
-     * @param proxy       SOCKS proxy.
-     * @param proxySocket a unconnected socket. it will connect SOCKS server later.
-     */
-    public SocksSocket(SocksProxy proxy, Socket proxySocket) {
-        checkNotNull(proxy, "Argument [proxy] may not be null");
-        checkNotNull(proxySocket, "Argument [proxySocket] may not be null");
+    public HttpConnectSocket(HttpConnectProxy proxy, Socket proxySocket) {
+        this.proxy = checkNotNull(proxy, "Argument [proxy] may not be null").copy();
+        this.proxySocket = checkNotNull(proxySocket, "Argument [proxySocket] may be not null");
         checkArgument(!proxySocket.isConnected(), "Proxy socket should be unconnected");
-        this.proxySocket = proxySocket;
-        this.proxy = proxy.copy();
         this.proxy.setProxySocket(proxySocket);
     }
 
-    /**
-     * Initialize proxy chain.
-     *
-     * @throws SocketException If a SOCKS protocol error occurred.
-     * @throws IOException     If an I/O error occurred.
-     */
-    private void initProxyChain() throws SocketException, IOException {
-        List<SocksProxy> proxyChain = new ArrayList<>();
-        SocksProxy temp = proxy;
+    private void initProxyChain() throws IOException {
+        List<HttpConnectProxy> proxyChain = new ArrayList<>();
+        HttpConnectProxy temp = proxy;
         while (temp.getChainProxy() != null) {
             temp.getChainProxy().setProxySocket(proxySocket);
             proxyChain.add(temp.getChainProxy());
@@ -160,26 +78,17 @@ public class SocksSocket extends Socket {
         }
         if (proxyChain.size() > 0) {
             Log.d(TAG, "Proxy chain has:" + proxyChain.size() + " proxy");
-            SocksProxy pre = proxy;
+            HttpConnectProxy pre = proxy;
             for (int i = 0; i < proxyChain.size(); i++) {
-                SocksProxy chain = proxyChain.get(i);
+                HttpConnectProxy chain = proxyChain.get(i);
                 pre.requestConnect(chain.getInetAddress(), chain.getPort());
                 proxy.getChainProxy().buildConnection();
                 pre = chain;
             }
         }
-
     }
 
-    /**
-     * Connect to SOCKS Server and server will proxy remote server.
-     *
-     * @param host Remote server's host.
-     * @param port Remote server's port.
-     * @throws SocksException If any error about SOCKS protocol occurs.
-     * @throws IOException    If I/O error occurs.
-     */
-    public void connect(String host, int port) throws SocksException, IOException {
+    public void connect(String host, int port) throws IOException {
         this.remoteServerHost = checkNotNull(host, "Argument [host] may not be null");
         this.remoteServerPort = checkNotNull(port, "Argument [port] may not be null");
         proxy.buildConnection();
@@ -187,16 +96,13 @@ public class SocksSocket extends Socket {
         proxy.requestConnect(remoteServerHost, remoteServerPort);
     }
 
-
     @Override
-    public void connect(SocketAddress endpoint) throws SocksException, IOException {
+    public void connect(SocketAddress endpoint) throws IOException {
         connect(endpoint, 0);
     }
 
-
     @Override
-    public void connect(SocketAddress endpoint, int timeout) throws SocksException, IOException {
-
+    public void connect(SocketAddress endpoint, int timeout) throws IOException {
         if (!(endpoint instanceof InetSocketAddress)) {
             throw new IllegalArgumentException("Unsupported address type");
         }
@@ -204,25 +110,33 @@ public class SocksSocket extends Socket {
         remoteServerHost = ((InetSocketAddress) endpoint).getHostName();
         remoteServerPort = ((InetSocketAddress) endpoint).getPort();
 
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
+
         proxy.getProxySocket().setSoTimeout(timeout);
         proxy.buildConnection();
         initProxyChain();
-        proxy.requestConnect(endpoint);
-
+        proxy.requestConnect((InetSocketAddress) endpoint);
     }
 
     @Override
     public InputStream getInputStream() throws IOException {
+        if (proxy.getProxySocket() == null) {
+            throw new IOException("Proxy socket should be settled");
+        }
         return proxy.getProxySocket().getInputStream();
     }
 
     @Override
     public OutputStream getOutputStream() throws IOException {
+        if (proxy.getProxySocket() == null) {
+            throw new IOException("Proxy socket should be settled");
+        }
         return proxy.getProxySocket().getOutputStream();
     }
 
     @Override
     public void bind(SocketAddress bindpoint) throws IOException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         proxy.getProxySocket().bind(bindpoint);
     }
 
@@ -237,6 +151,7 @@ public class SocksSocket extends Socket {
 
     @Override
     public InetAddress getLocalAddress() {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         return proxy.getProxySocket().getLocalAddress();
     }
 
@@ -247,116 +162,139 @@ public class SocksSocket extends Socket {
 
     @Override
     public int getLocalPort() {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         return proxy.getProxySocket().getLocalPort();
     }
 
     @Override
     public SocketAddress getRemoteSocketAddress() {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         return proxy.getProxySocket().getRemoteSocketAddress();
     }
 
     @Override
     public SocketAddress getLocalSocketAddress() {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         return proxy.getProxySocket().getLocalSocketAddress();
     }
 
     @Override
     public SocketChannel getChannel() {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         return proxy.getProxySocket().getChannel();
     }
 
     @Override
     public boolean getTcpNoDelay() throws SocketException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         return proxy.getProxySocket().getTcpNoDelay();
     }
 
     @Override
     public void setTcpNoDelay(boolean on) throws SocketException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         proxy.getProxySocket().setTcpNoDelay(on);
     }
 
     @Override
     public void setSoLinger(boolean on, int linger) throws SocketException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         proxy.getProxySocket().setSoLinger(on, linger);
     }
 
     @Override
     public int getSoLinger() throws SocketException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         return proxy.getProxySocket().getSoLinger();
     }
 
     @Override
     public void sendUrgentData(int data) throws IOException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         proxy.getProxySocket().sendUrgentData(data);
     }
 
     @Override
     public boolean getOOBInline() throws SocketException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         return proxy.getProxySocket().getOOBInline();
     }
 
     @Override
     public void setOOBInline(boolean on) throws SocketException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         proxy.getProxySocket().setOOBInline(on);
     }
 
     @Override
     public synchronized int getSoTimeout() throws SocketException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         return proxy.getProxySocket().getSoTimeout();
     }
 
     @Override
     public synchronized void setSoTimeout(int timeout) throws SocketException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         proxy.getProxySocket().setSoTimeout(timeout);
     }
 
     @Override
     public synchronized int getSendBufferSize() throws SocketException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         return proxy.getProxySocket().getSendBufferSize();
     }
 
     @Override
     public synchronized void setSendBufferSize(int size) throws SocketException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         proxy.getProxySocket().setSendBufferSize(size);
     }
 
     @Override
     public synchronized int getReceiveBufferSize() throws SocketException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         return proxy.getProxySocket().getReceiveBufferSize();
     }
 
     @Override
     public synchronized void setReceiveBufferSize(int size) throws SocketException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         proxy.getProxySocket().setReceiveBufferSize(size);
     }
 
     @Override
     public boolean getKeepAlive() throws SocketException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         return proxy.getProxySocket().getKeepAlive();
     }
 
     @Override
     public void setKeepAlive(boolean on) throws SocketException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         proxy.getProxySocket().setKeepAlive(on);
     }
 
     @Override
     public int getTrafficClass() throws SocketException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         return proxy.getProxySocket().getTrafficClass();
     }
 
     @Override
     public void setTrafficClass(int tc) throws SocketException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         proxy.getProxySocket().setTrafficClass(tc);
     }
 
     @Override
     public boolean getReuseAddress() throws SocketException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         return proxy.getProxySocket().getReuseAddress();
     }
 
     @Override
     public void setReuseAddress(boolean on) throws SocketException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         proxy.getProxySocket().setReuseAddress(on);
     }
 
@@ -370,41 +308,51 @@ public class SocksSocket extends Socket {
 
     @Override
     public void shutdownInput() throws IOException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         proxy.getProxySocket().shutdownInput();
     }
 
     @Override
     public void shutdownOutput() throws IOException {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         proxy.getProxySocket().shutdownOutput();
     }
 
     @Override
     public boolean isConnected() {
+        if (proxy.getProxySocket() == null) {
+            return false;
+        }
         return proxy.getProxySocket().isConnected();
     }
 
     @Override
     public boolean isBound() {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         return proxy.getProxySocket().isBound();
     }
 
     @Override
     public boolean isClosed() {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         return proxy.getProxySocket().isClosed();
     }
 
     @Override
     public boolean isInputShutdown() {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         return proxy.getProxySocket().isInputShutdown();
     }
 
     @Override
     public boolean isOutputShutdown() {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         return proxy.getProxySocket().isOutputShutdown();
     }
 
     @Override
     public void setPerformancePreferences(int connectionTime, int latency, int bandwidth) {
+        checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         proxy.getProxySocket().setPerformancePreferences(connectionTime, latency, bandwidth);
     }
 
@@ -412,4 +360,12 @@ public class SocksSocket extends Socket {
         return proxy.getProxySocket();
     }
 
+    @Override
+    public String toString() {
+        if (getProxySocket() != null) {
+            return getProxySocket().toString();
+        } else {
+            return super.toString();
+        }
+    }
 }

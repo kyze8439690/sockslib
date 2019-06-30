@@ -16,14 +16,6 @@ package sockslib.client;
 
 import android.util.Log;
 
-import sockslib.common.AddressType;
-import sockslib.common.ProtocolErrorException;
-import sockslib.common.SocksCommand;
-import sockslib.common.SocksException;
-import sockslib.utils.LogMessageBuilder;
-import sockslib.utils.LogMessageBuilder.MsgType;
-import sockslib.utils.UnsignedByte;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +24,14 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+
+import sockslib.common.AddressType;
+import sockslib.common.ProtocolErrorException;
+import sockslib.common.SocksCommand;
+import sockslib.common.SocksException;
+import sockslib.utils.LogMessageBuilder;
+import sockslib.utils.LogMessageBuilder.MsgType;
+import sockslib.utils.UnsignedByte;
 
 /**
  * The class <code>GenericSocksCommandSender</code> implements {@link SocksCommandSender}.
@@ -42,7 +42,7 @@ import java.net.SocketAddress;
  */
 public class GenericSocksCommandSender implements SocksCommandSender {
 
-    private static final String TAG = "GenericSocksCommandSender";
+    private static final String TAG = "SocksCommandSender";
 
     /**
      * length of IPv4 address.

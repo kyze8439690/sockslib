@@ -32,7 +32,6 @@ import sockslib.common.Credentials;
 import sockslib.common.SocksCommand;
 import sockslib.common.SocksException;
 import sockslib.common.UsernamePasswordCredentials;
-import sockslib.common.methods.GssApiMethod;
 import sockslib.common.methods.NoAuthenticationRequiredMethod;
 import sockslib.common.methods.SocksMethod;
 import sockslib.common.methods.SocksMethodRegistry;
@@ -178,7 +177,6 @@ public class Socks5 implements SocksProxy {
     private void init() {
         acceptableMethods = new ArrayList<>();
         acceptableMethods.add(new NoAuthenticationRequiredMethod());
-        acceptableMethods.add(new GssApiMethod());
         acceptableMethods.add(new UsernamePasswordMethod());
     }
 
@@ -327,12 +325,22 @@ public class Socks5 implements SocksProxy {
         return this;
     }
 
+    public SocksCommandSender getSocksCmdSender() {
+        return socksCmdSender;
+    }
+
+    public Socks5 setSocksCmdSender(SocksCommandSender socksCmdSender) {
+        this.socksCmdSender = socksCmdSender;
+        return this;
+    }
+
     @Override
     public SocksProxy copy() {
         Socks5 socks5 = new Socks5(inetAddress, port);
-        socks5.setAcceptableMethods(acceptableMethods).setAlwaysResolveAddressLocally
-                (alwaysResolveAddressLocally).setCredentials(credentials).setSocksMethodRequester
-                (socksMethodRequester).setChainProxy(chainProxy);
+        socks5.setAcceptableMethods(acceptableMethods)
+                .setAlwaysResolveAddressLocally(alwaysResolveAddressLocally)
+                .setCredentials(credentials).setSocksMethodRequester(socksMethodRequester)
+                .setSocksCmdSender(socksCmdSender).setChainProxy(chainProxy);
         return socks5;
     }
 

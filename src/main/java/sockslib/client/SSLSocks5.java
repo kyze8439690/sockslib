@@ -14,14 +14,12 @@
 
 package sockslib.client;
 
-import sockslib.common.SSLConfiguration;
-import sockslib.common.SSLConfigurationException;
-import sockslib.common.SocksException;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+
+import javax.net.ssl.SSLSocketFactory;
 
 /**
  * The class <code>SSLSocks5</code> represents a SSL based SOCKS5 proxy. It will build a SSL based
@@ -37,35 +35,27 @@ public class SSLSocks5 extends Socks5 {
     /**
      * SSL configuration.
      */
-    private SSLConfiguration configuration;
+    private SSLSocketFactory factory;
 
-    public SSLSocks5(SocketAddress address, SSLConfiguration configuration) {
+    public SSLSocks5(SocketAddress address, SSLSocketFactory factory) {
         super(address);
-        this.configuration = configuration;
+        this.factory = factory;
     }
 
-    public SSLSocks5(InetAddress address, int port, SSLConfiguration configuration) {
+    public SSLSocks5(InetAddress address, int port, SSLSocketFactory factory) {
         super(address, port);
-        this.configuration = configuration;
+        this.factory = factory;
     }
 
     @Override
     public Socket createProxySocket(InetAddress address, int port) throws IOException {
-        try {
-            return configuration.getSSLSocketFactory().createSocket(address, port);
-        } catch (SSLConfigurationException e) {
-            throw new SocksException(e.getMessage());
-        }
+        return factory.createSocket(address, port);
     }
 
 
     @Override
     public Socket createProxySocket() throws IOException {
-        try {
-            return configuration.getSSLSocketFactory().createSocket();
-        } catch (SSLConfigurationException e) {
-            throw new SocksException(e.getMessage());
-        }
+        return factory.createSocket();
     }
 
     @Override
@@ -75,7 +65,7 @@ public class SSLSocks5 extends Socks5 {
 
     @Override
     public SocksProxy copyWithoutChainProxy() {
-        SSLSocks5 socks5 = new SSLSocks5(getInetAddress(), getPort(), configuration);
+        SSLSocks5 socks5 = new SSLSocks5(getInetAddress(), getPort(), factory);
         socks5.setAcceptableMethods(getAcceptableMethods()).setAlwaysResolveAddressLocally
                 (isAlwaysResolveAddressLocally()).setCredentials(getCredentials()).setInetAddress
                 (getInetAddress()).setPort(getPort()).setSocksMethodRequester(
@@ -83,11 +73,11 @@ public class SSLSocks5 extends Socks5 {
         return socks5;
     }
 
-    public SSLConfiguration getConfiguration() {
-        return configuration;
+    public SSLSocketFactory getFactory() {
+        return factory;
     }
 
-    public void setConfiguration(SSLConfiguration configuration) {
-        this.configuration = configuration;
+    public void setFactory(SSLSocketFactory factory) {
+        this.factory = factory;
     }
 }

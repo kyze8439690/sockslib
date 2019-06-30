@@ -40,14 +40,3 @@ dependencies {
     api 'androidx.core:core:1.2.0-alpha02'
     api 'androidx.annotation:annotation:1.1.0'
 }
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "file://" + projectDir + "/../maven")
-            pom.groupId = 'sockslib.client'
-            pom.artifactId = 'library'
-            pom.version = android.defaultConfig.versionName
-        }
-    }
-}
