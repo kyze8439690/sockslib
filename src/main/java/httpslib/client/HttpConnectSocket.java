@@ -302,7 +302,6 @@ public class HttpConnectSocket extends Socket {
     public synchronized void close() throws IOException {
         if (proxy.getProxySocket() != null) {
             proxy.getProxySocket().close();
-            proxy.setProxySocket(null);
         }
     }
 

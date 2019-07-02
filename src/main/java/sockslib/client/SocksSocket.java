@@ -213,11 +213,17 @@ public class SocksSocket extends Socket {
 
     @Override
     public InputStream getInputStream() throws IOException {
+        if (proxy.getProxySocket() == null) {
+            throw new IOException("Proxy socket should be settled");
+        }
         return proxy.getProxySocket().getInputStream();
     }
 
     @Override
     public OutputStream getOutputStream() throws IOException {
+        if (proxy.getProxySocket() == null) {
+            throw new IOException("Proxy socket should be settled");
+        }
         return proxy.getProxySocket().getOutputStream();
     }
 
