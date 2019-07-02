@@ -14,8 +14,6 @@
 
 package sockslib.client;
 
-import android.util.Log;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -25,8 +23,6 @@ import java.util.List;
 import sockslib.common.SocksException;
 import sockslib.common.methods.SocksMethod;
 import sockslib.common.methods.SocksMethodRegistry;
-import sockslib.utils.LogMessageBuilder;
-import sockslib.utils.LogMessageBuilder.MsgType;
 import sockslib.utils.StreamUtil;
 
 /**
@@ -39,7 +35,7 @@ import sockslib.utils.StreamUtil;
  */
 public class GenericSocksMethodRequester implements SocksMethodRequester {
 
-    private static final String TAG = "GenericSocksMethodRequester";
+    private static final String TAG = "SocksMethodRequester";
 
     @Override
     public SocksMethod doRequest(List<SocksMethod> acceptableMethods, Socket socket, int
@@ -57,11 +53,11 @@ public class GenericSocksMethodRequester implements SocksMethodRequester {
         outputStream.write(bufferSent);
         outputStream.flush();
 
-        Log.d(TAG, LogMessageBuilder.build(bufferSent, MsgType.SEND));
+//        Log.d(TAG, LogMessageBuilder.build(bufferSent, MsgType.SEND));
 
         // Received data.
         byte[] receivedData = StreamUtil.read(inputStream, 2);
-        Log.d(TAG, LogMessageBuilder.build(receivedData, MsgType.RECEIVE));
+//        Log.d(TAG, LogMessageBuilder.build(receivedData, MsgType.RECEIVE));
 
         if (receivedData[0] != socksVersion) {
             throw new SocksException("Remote server don't support SOCKS5");

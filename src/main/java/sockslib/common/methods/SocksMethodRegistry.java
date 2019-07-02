@@ -16,8 +16,6 @@ package sockslib.common.methods;
 
 import static androidx.core.util.Preconditions.checkNotNull;
 
-import android.util.Log;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,8 +52,8 @@ public class SocksMethodRegistry {
      */
     public static void putMethod(SocksMethod socksMethod) {
         checkNotNull(socksMethod, "Argument [socksMethod] may not be null");
-        Log.d(TAG, String.format("Register %s[%d]", socksMethod.getMethodName(),
-                socksMethod.getByte()));
+//        Log.d(TAG, String.format("Register %s[%d]", socksMethod.getMethodName(),
+//                socksMethod.getByte()));
         methods.put((byte) socksMethod.getByte(), socksMethod);
     }
 
