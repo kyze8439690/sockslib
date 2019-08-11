@@ -3,6 +3,7 @@ package httpslib.client;
 import android.util.Base64;
 import android.util.Log;
 
+import androidx.annotation.CheckResult;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -28,6 +29,7 @@ public class HttpConnectProxy {
 
     private InetAddress inetAddress;
     private int port;
+    private int mTimeOut = 0;
     @Nullable private String userAgent;
     private Socket proxySocket;
     @NonNull private SocketFactory factory = SocketFactory.getDefault();
@@ -62,6 +64,10 @@ public class HttpConnectProxy {
         this.inetAddress = InetAddress.getByName(host);
         this.port = port;
         this.credentials = credentials;
+    }
+
+    public void setTimeOut(int timeOut) {
+        mTimeOut = timeOut;
     }
 
     @Nullable
@@ -114,11 +120,13 @@ public class HttpConnectProxy {
         }
         if (proxySocket == null) {
             proxySocket = createProxySocket(inetAddress, port);
+            proxySocket.setSoTimeout(mTimeOut);
         } else if (!proxySocket.isConnected()) {
-            proxySocket.connect(new InetSocketAddress(inetAddress, port));
+            proxySocket.connect(new InetSocketAddress(inetAddress, port), mTimeOut);
         }
     }
 
+    @CheckResult
     public boolean requestConnect(String host, int port)
             throws IOException {
         if (!alwaysResolveAddressLocally) {
@@ -132,11 +140,13 @@ public class HttpConnectProxy {
         }
     }
 
+    @CheckResult
     public boolean requestConnect(InetAddress address, int port)
             throws IOException {
         return send(proxySocket, new InetSocketAddress(address, port));
     }
 
+    @CheckResult
     public boolean requestConnect(InetSocketAddress address)
             throws IOException {
         return send(proxySocket, address);

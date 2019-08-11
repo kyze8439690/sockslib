@@ -81,7 +81,9 @@ public class HttpConnectSocket extends Socket {
             HttpConnectProxy pre = proxy;
             for (int i = 0; i < proxyChain.size(); i++) {
                 HttpConnectProxy chain = proxyChain.get(i);
-                pre.requestConnect(chain.getInetAddress(), chain.getPort());
+                if (!pre.requestConnect(chain.getInetAddress(), chain.getPort())) {
+                    throw new IOException("Request connected failed");
+                }
                 proxy.getChainProxy().buildConnection();
                 pre = chain;
             }
@@ -93,7 +95,9 @@ public class HttpConnectSocket extends Socket {
         this.remoteServerPort = checkNotNull(port, "Argument [port] may not be null");
         proxy.buildConnection();
         initProxyChain();
-        proxy.requestConnect(remoteServerHost, remoteServerPort);
+        if (!proxy.requestConnect(remoteServerHost, remoteServerPort)) {
+            throw new IOException("Request connected failed");
+        }
     }
 
     @Override
@@ -113,9 +117,12 @@ public class HttpConnectSocket extends Socket {
         checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
 
         proxy.getProxySocket().setSoTimeout(timeout);
+        proxy.setTimeOut(timeout);
         proxy.buildConnection();
         initProxyChain();
-        proxy.requestConnect((InetSocketAddress) endpoint);
+        if (!proxy.requestConnect((InetSocketAddress) endpoint)) {
+            throw new IOException("Request connected failed");
+        }
     }
 
     @Override
@@ -234,6 +241,7 @@ public class HttpConnectSocket extends Socket {
 
     @Override
     public synchronized void setSoTimeout(int timeout) throws SocketException {
+        proxy.setTimeOut(timeout);
         checkNotNull(proxy.getProxySocket(), "Proxy socket should be settled");
         proxy.getProxySocket().setSoTimeout(timeout);
     }

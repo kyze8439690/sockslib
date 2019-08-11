@@ -82,6 +82,8 @@ public class Socks5 implements SocksProxy {
      * SOCKS5 server's port;
      */
     private int port = SOCKS_DEFAULT_PORT;
+
+    private int mTimeOut = 0;
     /**
      * The socket that will connect to SOCKS5 server.
      */
@@ -188,8 +190,9 @@ public class Socks5 implements SocksProxy {
         }
         if (proxySocket == null) {
             proxySocket = createProxySocket(inetAddress, port);
+            proxySocket.setSoTimeout(mTimeOut);
         } else if (!proxySocket.isConnected()) {
-            proxySocket.connect(new InetSocketAddress(inetAddress, port));
+            proxySocket.connect(new InetSocketAddress(inetAddress, port), mTimeOut);
         }
 
         SocksMethod method =
@@ -279,6 +282,11 @@ public class Socks5 implements SocksProxy {
     public Socks5 setProxySocket(Socket proxySocket) {
         this.proxySocket = proxySocket;
         return this;
+    }
+
+    @Override
+    public void setTimeOut(int timeOut) {
+        mTimeOut = timeOut;
     }
 
     @Override

@@ -204,6 +204,7 @@ public class SocksSocket extends Socket {
         remoteServerHost = ((InetSocketAddress) endpoint).getHostName();
         remoteServerPort = ((InetSocketAddress) endpoint).getPort();
 
+        proxy.setTimeOut(timeout);
         proxy.getProxySocket().setSoTimeout(timeout);
         proxy.buildConnection();
         initProxyChain();
@@ -313,6 +314,7 @@ public class SocksSocket extends Socket {
 
     @Override
     public synchronized void setSoTimeout(int timeout) throws SocketException {
+        proxy.setTimeOut(timeout);
         proxy.getProxySocket().setSoTimeout(timeout);
     }
 

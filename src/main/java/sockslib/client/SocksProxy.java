@@ -62,6 +62,8 @@ public interface SocksProxy {
      */
     SocksProxy setProxySocket(@Nullable Socket socket);
 
+    void setTimeOut(int timeOut);
+
     /**
      * Get SOCKS Server port.
      *
